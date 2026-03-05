@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 $stmt = $pdo->query("SELECT * FROM notulen ORDER BY tanggal DESC, waktu_mulai DESC");
 $notulen = $stmt->fetchAll();
 ?>

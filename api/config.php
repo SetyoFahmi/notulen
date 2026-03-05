@@ -1,13 +1,18 @@
 <?php
-// Mengambil kredensial dengan fallback string kosong jika tidak ada
-$host     = getenv('POSTGRES_HOST') ?: '';
-$db_name  = getenv('POSTGRES_DATABASE') ?: '';
-$user     = getenv('POSTGRES_USER') ?: '';
-$password = getenv('POSTGRES_PASSWORD') ?: '';
 
-// Cek apakah variabel penting sudah terisi
-if (empty($host) || empty($db_name)) {
-    die("Error: Environment Variables (POSTGRES_HOST / DATABASE) belum diatur di Dashboard Vercel.");
+// Coba ambil menggunakan $_ENV jika getenv gagal di beberapa runtime
+$host     = $_ENV['POSTGRES_HOST'] ?? getenv('POSTGRES_HOST');
+$db_name  = $_ENV['POSTGRES_DATABASE'] ?? getenv('POSTGRES_DATABASE');
+$user     = $_ENV['POSTGRES_USER'] ?? getenv('POSTGRES_USER');
+$password = $_ENV['POSTGRES_PASSWORD'] ?? getenv('POSTGRES_PASSWORD');
+
+// Jika masih kosong, coba cek apakah Anda menggunakan variabel POSTGRES_URL
+if (empty($host) && getenv('POSTGRES_URL')) {
+    $url = parse_url(getenv('POSTGRES_URL'));
+    $host = $url['host'];
+    $db_name = ltrim($url['path'], '/');
+    $user = $url['user'];
+    $password = $url['pass'];
 }
 
 try {
