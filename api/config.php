@@ -1,8 +1,7 @@
 <?php
 require_once __DIR__ . '/config.php';
-$host     = getenv('POSTGRES_HOST');
-$db_name  = getenv('POSTGRES_DATABASE');
-$user     = getenv('POSTGRES_USER');
+$dsn = str_replace("postgres://", "pgsql:", getenv('POSTGRES_URL'));
+$user = getenv('POSTGRES_USER');
 $password = getenv('POSTGRES_PASSWORD');
 
 try {
@@ -42,7 +41,7 @@ try {
     $pdo->exec($sql);
 
 } catch (PDOException $e) {
-    error_log("Gagal konek database: " . $e->getMessage());
-    die("Sistem sedang maintenance. Silakan coba lagi nanti.");
+    // SEMENTARA: Tampilkan error aslinya untuk debug
+    die("Detail Error: " . $e->getMessage());
 }
 ?>
