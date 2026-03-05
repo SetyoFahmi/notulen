@@ -1,5 +1,5 @@
 <?php
-// Mengambil kredensial dari Environment Variables yang Anda isi di Dashboard Vercel
+require_once __DIR__ . '/config.php';
 $host     = getenv('POSTGRES_HOST');
 $db_name  = getenv('POSTGRES_DATABASE');
 $user     = getenv('POSTGRES_USER');
