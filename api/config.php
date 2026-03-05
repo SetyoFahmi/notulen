@@ -1,20 +1,25 @@
 <?php
-require_once __DIR__ . '/config.php';
-$dsn = str_replace("postgres://", "pgsql:", getenv('POSTGRES_URL'));
-$user = getenv('POSTGRES_USER');
-$password = getenv('POSTGRES_PASSWORD');
+// Mengambil kredensial dengan fallback string kosong jika tidak ada
+$host     = getenv('POSTGRES_HOST') ?: '';
+$db_name  = getenv('POSTGRES_DATABASE') ?: '';
+$user     = getenv('POSTGRES_USER') ?: '';
+$password = getenv('POSTGRES_PASSWORD') ?: '';
+
+// Cek apakah variabel penting sudah terisi
+if (empty($host) || empty($db_name)) {
+    die("Error: Environment Variables (POSTGRES_HOST / DATABASE) belum diatur di Dashboard Vercel.");
+}
 
 try {
-    // Koneksi menggunakan driver PostgreSQL (pgsql)
-    $dsn = "pgsql:host=$host;port=5432;dbname=$db_name;";
+    // Pastikan format DSN benar: pgsql:host=...;port=5432;dbname=...
+    $dsn = "pgsql:host=$host;port=5432;dbname=$db_name";
     $pdo = new PDO($dsn, $user, $password);
     
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-    // Otomatis membuat tabel 'notulen' di cloud jika belum ada
-    $sql = "
-    CREATE TABLE IF NOT EXISTS notulen (
+    // SQL Create Table (Tetap seperti sebelumnya)
+    $sql = "CREATE TABLE IF NOT EXISTS notulen (
         id SERIAL PRIMARY KEY,
         judul VARCHAR(200) NOT NULL,
         tanggal DATE NOT NULL,
@@ -41,7 +46,7 @@ try {
     $pdo->exec($sql);
 
 } catch (PDOException $e) {
-    // SEMENTARA: Tampilkan error aslinya untuk debug
-    die("Detail Error: " . $e->getMessage());
+    // Tampilkan error spesifik untuk mempermudah perbaikan
+    die("Detail Error Koneksi: " . $e->getMessage());
 }
 ?>
