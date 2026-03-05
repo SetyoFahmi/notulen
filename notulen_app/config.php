@@ -1,19 +1,19 @@
 <?php
-// Vercel Postgres menggunakan variabel lingkungan otomatis
+// Mengambil kredensial dari Environment Variables yang Anda isi di Dashboard Vercel
 $host     = getenv('POSTGRES_HOST');
 $db_name  = getenv('POSTGRES_DATABASE');
 $user     = getenv('POSTGRES_USER');
 $password = getenv('POSTGRES_PASSWORD');
 
 try {
-    // Koneksi menggunakan PDO untuk PostgreSQL
+    // Koneksi menggunakan driver PostgreSQL (pgsql)
     $dsn = "pgsql:host=$host;port=5432;dbname=$db_name;";
     $pdo = new PDO($dsn, $user, $password);
     
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-    // Buat tabel jika belum ada (Auto-migration)
+    // Otomatis membuat tabel 'notulen' di cloud jika belum ada
     $sql = "
     CREATE TABLE IF NOT EXISTS notulen (
         id SERIAL PRIMARY KEY,
@@ -42,8 +42,7 @@ try {
     $pdo->exec($sql);
 
 } catch (PDOException $e) {
-    // Jangan tampilkan detail error di produksi, cukup log saja
-    error_log("Koneksi database gagal: " . $e->getMessage());
-    die("Maaf, terjadi masalah koneksi ke server.");
+    error_log("Gagal konek database: " . $e->getMessage());
+    die("Sistem sedang maintenance. Silakan coba lagi nanti.");
 }
 ?>
