@@ -1,29 +1,38 @@
 <?php
+/**
+ * File: api/config.php
+ * Konfigurasi Database PostgreSQL untuk Vercel Deployment
+ */
 
-// Coba ambil menggunakan $_ENV jika getenv gagal di beberapa runtime
+// 1. Ambil kredensial dari Environment Variables Vercel
 $host     = $_ENV['POSTGRES_HOST'] ?? getenv('POSTGRES_HOST');
 $db_name  = $_ENV['POSTGRES_DATABASE'] ?? getenv('POSTGRES_DATABASE');
 $user     = $_ENV['POSTGRES_USER'] ?? getenv('POSTGRES_USER');
 $password = $_ENV['POSTGRES_PASSWORD'] ?? getenv('POSTGRES_PASSWORD');
 
-// Jika masih kosong, coba cek apakah Anda menggunakan variabel POSTGRES_URL
-if (empty($host) && getenv('POSTGRES_URL')) {
-    $url = parse_url(getenv('POSTGRES_URL'));
-    $host = $url['host'];
-    $db_name = ltrim($url['path'], '/');
-    $user = $url['user'];
-    $password = $url['pass'];
+// 2. Fallback: Jika variabel satuan kosong, coba parsing dari POSTGRES_URL (Fitur Otomatis Vercel)
+if (empty($host) && (getenv('POSTGRES_URL') || isset($_ENV['POSTGRES_URL']))) {
+    $url = parse_url(getenv('POSTGRES_URL') ?: $_ENV['POSTGRES_URL']);
+    $host     = $url['host'] ?? '';
+    $db_name  = ltrim($url['path'] ?? '', '/');
+    $user     = $url['user'] ?? '';
+    $password = $url['pass'] ?? '';
+}
+
+// 3. Validasi akhir sebelum mencoba koneksi
+if (empty($host)) {
+    die("Detail Error Koneksi: Variabel database (HOST) tidak ditemukan. Pastikan sudah mengisi Environment Variables di Dashboard Vercel dan melakukan REDEPLOY.");
 }
 
 try {
-    // Pastikan format DSN benar: pgsql:host=...;port=5432;dbname=...
-    $dsn = "pgsql:host=$host;port=5432;dbname=$db_name";
+    // 4. Inisialisasi Koneksi PDO PostgreSQL
+    $dsn = "pgsql:host=$host;port=5432;dbname=$db_name;sslmode=require";
     $pdo = new PDO($dsn, $user, $password);
     
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-    // SQL Create Table (Tetap seperti sebelumnya)
+    // 5. Otomatis buat tabel 'notulen' jika belum ada di cloud
     $sql = "CREATE TABLE IF NOT EXISTS notulen (
         id SERIAL PRIMARY KEY,
         judul VARCHAR(200) NOT NULL,
@@ -51,7 +60,7 @@ try {
     $pdo->exec($sql);
 
 } catch (PDOException $e) {
-    // Tampilkan error spesifik untuk mempermudah perbaikan
+    // Menampilkan pesan error spesifik jika koneksi gagal
     die("Detail Error Koneksi: " . $e->getMessage());
 }
 ?>
