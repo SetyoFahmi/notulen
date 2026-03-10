@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 $columns = $pdo->query("PRAGMA table_info(notulen)")->fetchAll(PDO::FETCH_COLUMN, 1);
 echo "<h3>Kolom dalam tabel notulen:</h3>";

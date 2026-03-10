@@ -1,4 +1,33 @@
 <?php
+// ========== ROUTING SEDERHANA ==========
+// Menangani permintaan ke halaman seperti tambah, edit, detail, dll.
+
+$request = $_SERVER['REQUEST_URI'];
+$path = parse_url($request, PHP_URL_PATH);
+$path = ltrim($path, '/'); // hapus leading slash
+
+// Jika path mengandung ekstensi .php, hilangkan (agar /tambah.php dan /tambah sama)
+if (substr($path, -4) === '.php') {
+    $path = substr($path, 0, -4);
+}
+
+// Daftar halaman yang valid (sesuaikan dengan nama file PHP Anda)
+$valid_pages = ['tambah', 'edit', 'hapus', 'detail', 'cek_kolom'];
+
+// Jika halaman valid dan file-nya ada, include dan hentikan eksekusi
+if (!empty($path) && in_array($path, $valid_pages) && file_exists(__DIR__ . '/' . $path . '.php')) {
+    include __DIR__ . '/' . $path . '.php';
+    exit;
+}
+
+// Jika path tidak kosong dan bukan 'index', tampilkan 404
+if (!empty($path) && $path !== 'index' && $path !== '') {
+    http_response_code(404);
+    echo "<h1>404 - Halaman Tidak Ditemukan</h1>";
+    exit;
+}
+
+// ========== KODE UTAMA INDEX.PHP (halaman daftar notulen) ==========
 require_once __DIR__ . '/config.php';
 $stmt = $pdo->query("SELECT * FROM notulen ORDER BY tanggal DESC, waktu_mulai DESC");
 $notulen = $stmt->fetchAll();

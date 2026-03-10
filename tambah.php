@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 // Pastikan folder uploads ada
 $upload_dir = __DIR__ . '/uploads/';

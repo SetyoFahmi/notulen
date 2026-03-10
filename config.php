@@ -1,8 +1,5 @@
 <?php
-/**
- * File: api/config.php
- * Konfigurasi Database PostgreSQL untuk Vercel Deployment
- */
+
 
 // 1. Ambil kredensial dari Environment Variables Vercel
 $host     = $_ENV['POSTGRES_HOST'] ?? getenv('POSTGRES_HOST');
