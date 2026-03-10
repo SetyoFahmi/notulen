@@ -1,0 +1,163 @@
+body {
+  font-family: "Times New Roman", Times, serif;
+  background: white;
+  margin: 0;
+  padding: 20px;
+}
+
+.notulen-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  padding: 30px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  background-color: black;
+  color: #ffffff;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.header-logo img {
+  height: 60px;
+  margin-right: 15px;
+}
+.header-logo h1 {
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+
+.info-rapat .row {
+  display: flex;
+  margin-bottom: 5px;
+  line-height: 1.6;
+}
+.info-rapat .label {
+  width: 120px;
+  font-weight: bold;
+}
+.info-rapat .value {
+  flex: 1;
+}
+
+.section-title {
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+/* Gabungkan aturan untuk teks dengan line-height yang lebih rapat */
+.peserta-text,
+.latar-text,
+.pembahasan-text,
+.kesimpulan-text {
+  margin-left: 20px;
+  text-align: justify;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.peserta-text ol {
+  margin: 0 0 10px 20px;
+  padding-left: 0;
+  line-height: 1.3;
+}
+.peserta-text ol li {
+  margin-bottom: 5px;
+}
+
+.signature-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+}
+.signature-table th,
+.signature-table td {
+  border: 1px solid black;
+  padding: 10px;
+  text-align: center;
+  vertical-align: top;
+}
+.signature-table .signature-space {
+  height: 50px;
+}
+
+.footer {
+  margin-top: 30px;
+  text-align: right;
+  font-size: 14px;
+}
+
+@media print {
+  /* Sembunyikan elemen yang tidak perlu */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Reset body untuk cetak */
+  body {
+    background: white;
+    padding: 0;
+    margin: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Atur halaman A4 dengan margin 4-3-4-3 */
+  @page {
+    size: A4;
+    margin: 4cm 3cm 4cm 3cm;
+
+    /* Nomor halaman di pojok kanan bawah */
+    @bottom-right {
+      content: "Halaman " counter(page);
+      font-size: 11pt;
+      font-family: "Times New Roman", Times, serif;
+    }
+  }
+
+  /* Hapus border, shadow, dan background dari container utama */
+  .notulen-container,
+  .card {
+    border: none !important;
+    box-shadow: none !important;
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Pastikan gambar tidak overflow */
+  img {
+    max-width: 100% !important;
+    height: auto;
+  }
+
+  /* Tabel tanda tangan tetap ada border */
+  .signature-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  .signature-table th,
+  .signature-table td {
+    border: 1px solid black !important;
+  }
+
+  /* Sembunyikan elemen page-number jika ada (karena sudah pakai @bottom-right) */
+  .page-number {
+    display: none;
+  }
+}
